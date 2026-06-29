@@ -1,7 +1,7 @@
 import { Route53Client, ListResourceRecordSetsCommand, ChangeResourceRecordSetsCommand } from '@aws-sdk/client-route-53'
 import { getRequiredEnv } from './src/util.js'
 
-class Route53Handler{
+export default class Route53Handler{
 	#client;
 	#ZONE_ID;
 
