@@ -133,7 +133,8 @@ export default class Route53Handler{
 			}
 		},
 		records = await this.getResource(domain,type),
-		length,response;
+		action = 'UPSERT',
+		length,response,original;
 
 		if(!Array.isArray(records)){
 			records = this.retrieveResourceType(domain,type);
@@ -141,11 +142,17 @@ export default class Route53Handler{
 
 		length = records.length;
 
+		original = records;
 		records = records.filter((v)=> v != value);
 
 		if(records.length != length){
+			if(records.length == 0){
+				records = original;
+				action = 'DELETE';
+			}
+
 			Changes.push({
-				Action:'UPSERT',
+				Action: action,
 				ResourceRecordSet:{
 					Name: domain,
 					Type: type,
