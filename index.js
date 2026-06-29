@@ -69,7 +69,7 @@ export default class Route53Handler{
 				}
 			},
 			action = 'CREATE',
-			response,redondant;
+			response,redondant,length;
 
 			if(!Array.isArray(value)){
 				value = [value];
@@ -92,24 +92,27 @@ export default class Route53Handler{
 				records = [];
 			}
 
-			redondant = (new Set(records)).intersection(new Set(value));
+			length = records.length;
 
-			if(redondant.size){
-				throw Error("Redundant data found " + Array.from(redondant).toString())
+			value = value.filter((addr)=> records.includes(addr) == false);
+
+			if(value.length){
+				records.push(...value);
+				Changes.push({
+					Action: action,
+					ResourceRecordSet:{
+						Name: domain,
+						Type: type,
+						TTL:ttl,
+						ResourceRecords: records.map((Value)=> ({ Value }))
+					},
+				});
+
+				response = await this.#client.send(new ChangeResourceRecordSetsCommand(input));
 			}
-
-			records.push(...value);
-			Changes.push({
-				Action: action,
-				ResourceRecordSet:{
-					Name: domain,
-					Type: type,
-					TTL:ttl,
-					ResourceRecords: records.map((Value)=> ({ Value }))
-				},
-			});
-
-			response = await this.#client.send(new ChangeResourceRecordSetsCommand(input));
+			else{
+				console.warn("Trying to insert value already in the record. Returning early");
+			}
 
 			return true;
 
