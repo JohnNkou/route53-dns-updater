@@ -1,0 +1,19 @@
+{
+  "name": "route53-dns-updater",
+  "type": "module",
+  "version": "1.0.0",
+  "description": "A utility that will be used to update route53 dns records",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "route53",
+    "update"
+  ],
+  "author": "Abel Kashoba",
+  "license": "ISC",
+  "dependencies": {
+    "@aws-sdk/client-route-53": "^3.1075.0"
+  }
+}
